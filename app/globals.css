@@ -1,26 +1,81 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── 디자인 시스템 (베이지/상아 베이스) ── */
+  --bg-main: #FAFAF8;
+  --bg-sub: #F3EEE9;
+  --bg-card: #FFFFFF;
+  
+  --primary: #3D3028;
+  --accent: #FF7A2F;
+  --accent-hover: #E86A1F;
+  --accent-soft: #FFF3EA;
+  
+  --banner-from: #3D3028;
+  --banner-to: #261E16;
+
+  --text-dark: #1C1A18;
+  --text: #4A4540;
+  --text-light: #8A847E;
+  --text-lighter: #B8B3AE;
+  --text-muted: #D0CBC6;
+
+  --border: #E8E2DC;
+  --border-light: #F2EDE8;
+
+  --success: #22A95C;
+  --success-soft: #E8F8F0;
+  --info: #4A8FE7;
+  --info-soft: #EBF2FD;
+  --warn: #E5A830;
+  --warn-soft: #FDF6E8;
+  --purple: #7C5CFC;
+  --purple-soft: #F2EFFE;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html {
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
+  background-color: #E8E4E0;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
+
+/* ── 유틸리티 ── */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.shadow-card { box-shadow: 0 2px 12px rgba(60, 48, 40, 0.04); }
+.shadow-float { box-shadow: 0 8px 24px rgba(60, 48, 40, 0.08); }
+.shadow-nav { box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.04); }
+.shadow-banner { box-shadow: 0 10px 40px rgba(60, 48, 40, 0.15); }
+
+input:focus, select:focus, textarea:focus { outline: none; }
+
+/* ── 페이드인 애니메이션 ── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-fade-in { animation: fadeInUp 0.5s ease-out forwards; }
+.anim-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.anim-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.anim-delay-3 { animation-delay: 0.3s; opacity: 0; }
