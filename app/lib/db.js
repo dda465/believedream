@@ -95,7 +95,7 @@ export async function createRentalRequest(requestData) {
     return { success: true, id: docRef.id };
   } catch (error) {
     console.error("Error submitting rental request to Firestore:", error);
-    return { success: true, id: `fallback-rental-${Math.floor(Math.random() * 90000 + 10000)}` };
+    return { success: false, id: null, error: "신청서 저장에 실패했습니다. 다시 시도해 주세요." };
   }
 }
 
@@ -115,6 +115,6 @@ export async function createPartnerApplication(applicationData) {
     return { success: true, id: docRef.id };
   } catch (error) {
     console.error("Error submitting partner application to Firestore:", error);
-    return { success: true, id: `fallback-partner-${Math.floor(Math.random() * 90000 + 10000)}` };
+    return { success: false, id: null, error: "입점 신청서 저장에 실패했습니다. 다시 시도해 주세요." };
   }
 }

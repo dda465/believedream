@@ -6,46 +6,62 @@ import { createPartnerApplication } from "@/app/lib/db";
 const districts = ["부산진구","해운대구","수영구","남구","동래구","연제구","사하구","사상구","강서구","북구","금정구","중구","동구","서구","영도구","기장군"];
 const cats = ["제습기","공기청정기","건조기","음식물처리기","로봇청소기","정수기","세탁기","기타"];
 
+function formatPhone(value) {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+}
+
 export default function PartnerPage() {
   const [showForm, setShowForm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [applicationId, setApplicationId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({ storeName:"", owner:"", phone:"", district:"", categories:[], businessType:"", buyrent:"" });
+  const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
 
-  const update = (k,v) => setForm(p=>({...p,[k]:v}));
-  const toggleCat = c => setForm(p=>({...p, categories: p.categories.includes(c) ? p.categories.filter(x=>x!==c) : [...p.categories, c]}));
+  const update = (k, v) => {
+    setForm(p => ({ ...p, [k]: v }));
+    if (errors[k]) setErrors(prev => ({ ...prev, [k]: "" }));
+    if (submitError) setSubmitError("");
+  };
+
+  const handlePhoneChange = (value) => {
+    const formatted = formatPhone(value);
+    setForm(p => ({ ...p, phone: formatted }));
+    if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
+    if (submitError) setSubmitError("");
+  };
+
+  const toggleCat = c => {
+    setForm(p => ({ ...p, categories: p.categories.includes(c) ? p.categories.filter(x => x !== c) : [...p.categories, c] }));
+    if (errors.categories) setErrors(prev => ({ ...prev, categories: "" }));
+  };
 
   const handleSubmit = async () => {
-    if (!form.storeName.trim()) {
-      alert("매장명을 입력해주세요.");
-      return;
-    }
-    if (!form.owner.trim()) {
-      alert("대표자명을 입력해주세요.");
-      return;
-    }
+    const newErrors = {};
+
+    if (!form.storeName.trim()) newErrors.storeName = "매장명을 입력해주세요.";
+    if (!form.owner.trim()) newErrors.owner = "대표자명을 입력해주세요.";
     if (!form.phone.trim()) {
-      alert("연락처를 입력해주세요.");
-      return;
+      newErrors.phone = "연락처를 입력해주세요.";
+    } else if (form.phone.replace(/\D/g, "").length < 10) {
+      newErrors.phone = "올바른 연락처를 입력해주세요.";
     }
-    if (!form.district) {
-      alert("매장 위치(구)를 선택해주세요.");
-      return;
-    }
-    if (form.categories.length === 0) {
-      alert("취급 품목을 하나 이상 선택해주세요.");
-      return;
-    }
-    if (!form.businessType) {
-      alert("사업 형태를 선택해주세요.");
-      return;
-    }
-    if (!form.buyrent) {
-      alert("재고 매입 서비스 관심 여부를 선택해주세요.");
+    if (!form.district) newErrors.district = "매장 위치(구)를 선택해주세요.";
+    if (form.categories.length === 0) newErrors.categories = "취급 품목을 하나 이상 선택해주세요.";
+    if (!form.businessType) newErrors.businessType = "사업 형태를 선택해주세요.";
+    if (!form.buyrent) newErrors.buyrent = "재고 매입 서비스 관심 여부를 선택해주세요.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
+    setErrors({});
+    setSubmitError("");
     setIsSubmitting(true);
     try {
       const res = await createPartnerApplication(form);
@@ -53,11 +69,11 @@ export default function PartnerPage() {
         setApplicationId(res.id);
         setSubmitted(true);
       } else {
-        alert("입점 신청서 제출에 실패했습니다. 다시 시도해 주세요.");
+        setSubmitError("입점 신청서 제출에 실패했습니다. 다시 시도해 주세요.");
       }
     } catch (error) {
       console.error(error);
-      alert("오류가 발생했습니다. 다시 시도해 주세요.");
+      setSubmitError("오류가 발생했습니다. 다시 시도해 주세요.");
     } finally {
       setIsSubmitting(false);
     }
@@ -66,7 +82,7 @@ export default function PartnerPage() {
   if (submitted) {
     const displayId = applicationId.startsWith("BD-2026-") ? applicationId : `BD-2026-${applicationId.replace(/^(mock-|fallback-)?partner-/, "")}`;
     return (
-      <div className="text-center py-16 px-5 bg-[var(--bg-main)] min-h-[calc(100vh-140px)] flex flex-col justify-between">
+      <div className="text-center py-16 px-5 bg-[var(--bg-main)] min-h-[calc(100vh-140px)] flex flex-col justify-between pb-[80px]">
         <div className="flex-1 flex flex-col justify-center items-center">
           <div className="w-16 h-16 bg-[var(--accent-soft)] rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm">
             <span className="text-3xl">🎉</span>
@@ -84,7 +100,7 @@ export default function PartnerPage() {
         </div>
         
         <div className="w-full">
-          <Link href="/" className="block w-full py-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[14px] text-center transition-all active:scale-[0.98] shadow-md">
+          <Link href="/" className="block w-full min-h-[48px] py-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[14px] text-center transition-all active:scale-[0.98] shadow-md flex items-center justify-center">
             홈으로
           </Link>
         </div>
@@ -93,10 +109,10 @@ export default function PartnerPage() {
   }
 
   return (
-    <div className="w-full bg-[var(--bg-main)]">
+    <div className="w-full bg-[var(--bg-main)] pb-[80px]">
       <div className="sticky top-[52px] z-40 bg-white/95 backdrop-blur-md border-b border-[var(--border-light)]">
         <div className="flex items-center gap-3 px-5 h-[48px]">
-          <Link href="/" className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] transition-colors">
+          <Link href="/" className="w-11 h-11 -ml-1.5 flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] transition-colors">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text)" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
           </Link>
           <h1 className="text-[15px] font-black text-[var(--text-dark)]">매장 입점 안내</h1>
@@ -110,7 +126,7 @@ export default function PartnerPage() {
             <div className="text-[40px] mb-3">🏪</div>
             <h2 className="text-[22px] font-black text-[var(--text-dark)] leading-snug">사장님 매장,<br/>더 많은 고객에게<br/>보여드릴게요</h2>
             <p className="text-[13px] text-[var(--text-light)] mt-2">입점 무료 · 거래 성사 시에만 수수료</p>
-            <button onClick={()=>setShowForm(true)} className="mt-5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold px-7 py-3 rounded-full text-[14px] transition-all active:scale-95 shadow-lg">무료 입점 신청 →</button>
+            <button onClick={()=>setShowForm(true)} className="mt-5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold px-7 min-h-[48px] rounded-full text-[14px] transition-all active:scale-95 shadow-[0_4px_16px_var(--accent-soft)]">무료 입점 신청 →</button>
           </section>
 
           <div className="h-2 bg-[var(--bg-sub)]" />
@@ -129,7 +145,7 @@ export default function PartnerPage() {
                   <div className="text-[22px] flex-shrink-0">{item.icon}</div>
                   <div>
                     <p className="text-[13px] font-bold text-[var(--text-dark)]">{item.title}</p>
-                    <p className="text-[11px] text-[var(--text-light)] mt-0.5">{item.desc}</p>
+                    <p className="text-[12px] text-[var(--text-light)] mt-0.5">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -143,13 +159,13 @@ export default function PartnerPage() {
             <h3 className="text-[16px] font-black text-[var(--text-dark)] mb-3">💳 수수료</h3>
             <div className="space-y-0">
               {[["입점 비용","무료",true],["상품 등록","무료",true],["거래 수수료","3~5%",false]].map(([k,v,free])=>(
-                <div key={k} className="flex justify-between py-2.5 border-b border-[var(--border-light)] last:border-0">
+                <div key={k} className="flex justify-between py-3 border-b border-[var(--border-light)] last:border-0">
                   <span className="text-[13px] text-[var(--text-light)]">{k}</span>
                   <span className={`text-[13px] font-bold ${free?'text-[var(--success)]':'text-[var(--primary)]'}`}>{v}</span>
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-[var(--text-lighter)] mt-2">※ 거래가 성사될 때만 수수료가 발생합니다</p>
+            <p className="text-[11px] text-[var(--text-lighter)] mt-2">※ 거래가 성사될 때만 수수료가 발생합니다</p>
           </section>
 
           <div className="h-2 bg-[var(--bg-sub)]" />
@@ -169,7 +185,7 @@ export default function PartnerPage() {
                   <div className="w-[32px] h-[32px] bg-[var(--accent)] text-white rounded-full flex items-center justify-center text-[12px] font-black flex-shrink-0 relative z-10 shadow-sm">{s.n}</div>
                   <div className="flex-1 pb-4">
                     <p className="text-[13px] font-bold text-[var(--text-dark)]">{s.t}</p>
-                    <p className="text-[11px] text-[var(--text-light)]">{s.d}</p>
+                    <p className="text-[12px] text-[var(--text-light)] mt-0.5">{s.d}</p>
                   </div>
                 </div>
               ))}
@@ -178,64 +194,142 @@ export default function PartnerPage() {
 
           {/* CTA */}
           <div className="px-5 py-6 pb-8">
-            <button onClick={()=>setShowForm(true)} className="w-full py-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[15px] transition-all active:scale-[0.98] shadow-lg">무료 입점 신청하기 →</button>
+            <button onClick={()=>setShowForm(true)} className="w-full min-h-[48px] py-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[15px] transition-all active:scale-[0.98] shadow-[0_4px_16px_var(--accent-soft)]">무료 입점 신청하기 →</button>
           </div>
         </>
       ) : (
-        <div className="px-5 py-5 space-y-5">
+        <div className="px-5 py-5 space-y-6">
           <div className="bg-[var(--accent-soft)] rounded-[var(--radius-md)] p-4 text-center">
-            <p className="text-[13px] font-bold text-[var(--accent)]">🏪 무료 입점 신청</p>
-            <p className="text-[11px] text-[var(--text-light)] mt-1">작성 후 담당자가 직접 방문합니다</p>
+            <p className="text-[14px] font-bold text-[var(--accent)]">🏪 무료 입점 신청</p>
+            <p className="text-[12px] text-[var(--text-light)] mt-1">작성 후 담당자가 직접 방문합니다</p>
           </div>
-          {[
-            {k:"storeName",l:"매장명",ph:"예: 서면 가전마트"},
-            {k:"owner",l:"대표자명",ph:"홍길동"},
-            {k:"phone",l:"연락처",ph:"010-0000-0000",type:"tel"},
-          ].map(f=>(
-            <div key={f.k}>
-              <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">{f.l}</label>
-              <input type={f.type||"text"} value={form[f.k]} onChange={e=>update(f.k,e.target.value)} placeholder={f.ph} className="w-full h-12 px-4 border border-[var(--border)] rounded-[var(--radius-md)] text-[14px] bg-white" />
-            </div>
-          ))}
+
+          {/* 매장명 */}
+          <div>
+            <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">매장명</label>
+            <input
+              type="text"
+              value={form.storeName}
+              onChange={e => update("storeName", e.target.value)}
+              placeholder="예: 서면 가전마트"
+              className={`w-full min-h-[48px] px-4 bg-white border rounded-[var(--radius-md)] text-[14px] outline-none focus:ring-2 focus:ring-[var(--accent-soft)] focus:border-[var(--accent)] transition-all ${errors.storeName ? 'border-red-400' : 'border-[var(--border)]'}`}
+            />
+            {errors.storeName && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.storeName}</p>}
+          </div>
+
+          {/* 대표자명 */}
+          <div>
+            <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">대표자명</label>
+            <input
+              type="text"
+              value={form.owner}
+              onChange={e => update("owner", e.target.value)}
+              placeholder="홍길동"
+              className={`w-full min-h-[48px] px-4 bg-white border rounded-[var(--radius-md)] text-[14px] outline-none focus:ring-2 focus:ring-[var(--accent-soft)] focus:border-[var(--accent)] transition-all ${errors.owner ? 'border-red-400' : 'border-[var(--border)]'}`}
+            />
+            {errors.owner && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.owner}</p>}
+          </div>
+
+          {/* 연락처 */}
+          <div>
+            <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">연락처</label>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={e => handlePhoneChange(e.target.value)}
+              placeholder="010-0000-0000"
+              className={`w-full min-h-[48px] px-4 bg-white border rounded-[var(--radius-md)] text-[14px] outline-none focus:ring-2 focus:ring-[var(--accent-soft)] focus:border-[var(--accent)] transition-all ${errors.phone ? 'border-red-400' : 'border-[var(--border)]'}`}
+            />
+            {errors.phone && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.phone}</p>}
+          </div>
+
+          {/* 매장 위치 */}
           <div>
             <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">매장 위치</label>
-            <select value={form.district} onChange={e=>update("district",e.target.value)} className="w-full h-12 px-4 border border-[var(--border)] rounded-[var(--radius-md)] text-[14px] bg-white">
+            <select
+              value={form.district}
+              onChange={e => update("district", e.target.value)}
+              className={`w-full min-h-[48px] px-4 bg-white border rounded-[var(--radius-md)] text-[14px] outline-none focus:ring-2 focus:ring-[var(--accent-soft)] focus:border-[var(--accent)] transition-all ${errors.district ? 'border-red-400' : 'border-[var(--border)]'}`}
+            >
               <option value="">구를 선택하세요</option>
-              {districts.map(d=><option key={d} value={d}>{d}</option>)}
+              {districts.map(d => <option key={d} value={d}>{d}</option>)}
             </select>
+            {errors.district && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.district}</p>}
           </div>
+
+          {/* 취급 품목 */}
           <div>
             <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">취급 품목</label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {cats.map(c=>(
-                <button key={c} onClick={()=>toggleCat(c)} className={`py-2 rounded-[var(--radius-sm)] border text-[11px] font-bold transition-all ${form.categories.includes(c)?'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]':'border-[var(--border)] text-[var(--text)]'}`}>{c}</button>
+                <button 
+                  key={c} 
+                  onClick={()=>toggleCat(c)} 
+                  className={`min-h-[44px] py-2.5 rounded-[var(--radius-sm)] border text-[13px] font-bold transition-all ${form.categories.includes(c) ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-sm' : 'border-[var(--border)] bg-white text-[var(--text)]'}`}
+                >
+                  {c}
+                </button>
               ))}
             </div>
+            {errors.categories && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.categories}</p>}
           </div>
+
+          {/* 사업 형태 */}
           <div>
             <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">사업 형태</label>
             <div className="grid grid-cols-2 gap-2">
               {["중고가전 판매","렌탈","리퍼/수리","기타"].map(t=>(
-                <button key={t} onClick={()=>update("businessType",t)} className={`py-2.5 rounded-[var(--radius-sm)] border text-[12px] font-bold transition-all ${form.businessType===t?'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]':'border-[var(--border)] text-[var(--text)]'}`}>{t}</button>
+                <button 
+                  key={t} 
+                  onClick={()=>update("businessType",t)} 
+                  className={`min-h-[44px] py-2.5 rounded-[var(--radius-sm)] border text-[13px] font-bold transition-all ${form.businessType===t ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-sm' : 'border-[var(--border)] bg-white text-[var(--text)]'}`}
+                >
+                  {t}
+                </button>
               ))}
             </div>
+            {errors.businessType && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.businessType}</p>}
           </div>
+
+          {/* 재고 매입 서비스 */}
           <div>
             <label className="text-[13px] font-bold text-[var(--text-dark)] mb-2 block">재고 매입 서비스 관심</label>
             <div className="grid grid-cols-3 gap-2">
               {["관심있음","아직 모름","관심없음"].map(o=>(
-                <button key={o} onClick={()=>update("buyrent",o)} className={`py-2.5 rounded-[var(--radius-sm)] border text-[11px] font-bold transition-all ${form.buyrent===o?'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]':'border-[var(--border)] text-[var(--text)]'}`}>{o}</button>
+                <button 
+                  key={o} 
+                  onClick={()=>update("buyrent",o)} 
+                  className={`min-h-[44px] py-2.5 rounded-[var(--radius-sm)] border text-[13px] font-bold transition-all ${form.buyrent===o ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-sm' : 'border-[var(--border)] bg-white text-[var(--text)]'}`}
+                >
+                  {o}
+                </button>
               ))}
             </div>
+            {errors.buyrent && <p className="text-[11px] text-red-500 mt-1.5 pl-1">{errors.buyrent}</p>}
           </div>
-          <button 
-            onClick={handleSubmit} 
-            disabled={isSubmitting}
-            className="w-full py-3.5 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[15px] transition-all active:scale-[0.98] shadow-lg mt-2 disabled:bg-[var(--text-lighter)]"
-          >
-            {isSubmitting ? "신청서 제출 중..." : "입점 신청 완료하기"}
-          </button>
-          <button onClick={()=>setShowForm(false)} className="w-full text-[13px] text-[var(--text-lighter)] py-2">← 입점 안내로 돌아가기</button>
+
+          {/* 제출 에러 메시지 */}
+          {submitError && (
+            <div className="bg-red-50 border border-red-200 rounded-[var(--radius-md)] p-3 text-center">
+              <p className="text-[12px] text-red-600 font-medium">{submitError}</p>
+            </div>
+          )}
+
+          <div className="pt-2">
+            <button 
+              onClick={handleSubmit} 
+              disabled={isSubmitting}
+              className="w-full min-h-[52px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[15px] transition-all active:scale-[0.98] shadow-[0_4px_16px_var(--accent-soft)] disabled:bg-[var(--text-lighter)] disabled:shadow-none flex items-center justify-center"
+            >
+              {isSubmitting ? "신청서 제출 중..." : "입점 신청 완료하기"}
+            </button>
+            <button
+              onClick={()=>setShowForm(false)}
+              className="w-full min-h-[44px] text-[13px] text-[var(--text-lighter)] mt-2 rounded-[var(--radius-sm)] transition-colors hover:text-[var(--text)] hover:bg-[var(--bg-sub)] flex items-center justify-center"
+            >
+              ← 입점 안내로 돌아가기
+            </button>
+          </div>
         </div>
       )}
     </div>
