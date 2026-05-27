@@ -309,7 +309,7 @@ export default function Home() {
           {[
             { icon:"🛡️", title:"안심 중고", desc:"전 제품 점검 완료\n상태등급 투명 공개", bg:"var(--info-soft)" },
             { icon:"⚡", title:"당일 설치", desc:"오늘 신청하면\n오늘 설치 완료", bg:"var(--success-soft)" },
-            { icon:"💰", title:"위약금 0원", desc:"중도해지해도\n추가 비용 없음", bg:"var(--warn-soft)" },
+            { icon:"💰", title:"위약금 최소화", desc:"일정기간 사용시\n위약금 0원!", bg:"var(--warn-soft)" },
             { icon:"🔄", title:"인수 가능", desc:"쓰다가 마음에 들면\n내 것으로 인수", bg:"var(--purple-soft)" },
           ].map(item => (
             <div key={item.title} className="rounded-[var(--radius-lg)] p-5 text-center border-none" style={{ backgroundColor: item.bg }}>
