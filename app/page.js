@@ -60,7 +60,7 @@ export default function Home() {
             <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
               <p className="text-[11px] font-semibold text-white/70 mb-1 tracking-wider uppercase">부산 중고가전 렌탈 플랫폼</p>
               <h2 className="text-[20px] font-black leading-[1.25] tracking-tight mb-2.5">
-                월 <span className="text-[var(--accent)]">9,900</span>원부터<br/>가전 렌탈 시작
+                월 <span className="text-[var(--accent)]">3,900</span>원부터<br/>가전 렌탈 시작
               </h2>
               <Link href="/apply" className="inline-block bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-[13px] font-bold px-5 py-2.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-glow">
                 지금 견적 받기 →
