@@ -3,9 +3,32 @@
 import "./globals.css";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
+  const [location, setLocation] = useState("부산진구 부전동");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("userLocation");
+    if (saved) setLocation(saved);
+  }, []);
+
+  const changeLocation = (newLoc) => {
+    setLocation(newLoc);
+    localStorage.setItem("userLocation", newLoc);
+    setIsModalOpen(false);
+  };
+
+  const findMyLocation = () => {
+    setIsLocating(true);
+    setTimeout(() => {
+      changeLocation("해운대구 우동"); // MVP GPS 목업
+      setIsLocating(false);
+    }, 1500);
+  };
 
   return (
     <html lang="ko">
@@ -22,10 +45,10 @@ export default function RootLayout({ children }) {
           {/* ── 헤더 ── */}
           <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[var(--border-light)]">
             <div className="flex items-center justify-between h-[52px] px-5">
-              <Link href="/" className="flex items-baseline gap-0.5 py-1 active:scale-95 transition-transform">
-                <span className="text-[20px] font-black tracking-tight text-[var(--primary)]">빌리</span>
-                <span className="text-[20px] font-black tracking-tight text-[var(--accent)]">드림</span>
-              </Link>
+              <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1.5 py-1 active:scale-95 transition-transform">
+                <span className="text-[18px] font-black tracking-tight text-[var(--text-dark)]">{location}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
               <div className="flex items-center gap-2">
                 <button aria-label="검색" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] active:scale-95 transition-all">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -54,6 +77,56 @@ export default function RootLayout({ children }) {
               <NavItem href="#" icon={<IconUser />} label="마이" active={false} />
             </div>
           </nav>
+
+          {/* ── 동네 설정 바텀 시트 (모달) ── */}
+          {isModalOpen && (
+            <>
+              {/* 배경 딤 처리 */}
+              <div 
+                className="absolute inset-0 bg-black/50 z-[60]" 
+                onClick={() => setIsModalOpen(false)} 
+              />
+              {/* 시트 콘텐츠 */}
+              <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[70] flex flex-col p-5 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] pb-10 transform transition-transform duration-300">
+                <div className="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-5" />
+                <h3 className="text-[20px] font-black text-[var(--text-dark)] mb-1">어느 동네에서 찾을까요?</h3>
+                <p className="text-[13px] text-[var(--text-light)] mb-6">동네를 설정하고 내 근처 당일 설치 매장을 만나보세요.</p>
+                
+                <button 
+                  onClick={findMyLocation}
+                  disabled={isLocating}
+                  className="w-full flex items-center justify-center gap-2 bg-[var(--primary)] text-white font-bold py-4 rounded-xl shadow-md active:scale-95 transition-transform mb-6 disabled:opacity-70"
+                >
+                  {isLocating ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                      현재 위치로 찾기
+                    </>
+                  )}
+                </button>
+                
+                <div className="mb-2">
+                  <p className="text-[13px] font-bold text-[var(--text-light)] mb-3">부산 인기 지역</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["부산진구 부전동", "부산진구 전포동", "해운대구 우동", "수영구 광안동", "동래구 온천동"].map(loc => (
+                      <button 
+                        key={loc}
+                        onClick={() => changeLocation(loc)}
+                        className={`px-4 py-2.5 rounded-full text-[13px] font-bold transition-all ${
+                          location === loc ? 'bg-[var(--accent)] text-white shadow-md' : 'bg-[#F8F9FA] text-[var(--text-dark)] border border-[var(--border)] hover:border-[var(--accent)]'
+                        }`}
+                      >
+                        {loc}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
         </div>
       </body>
     </html>
