@@ -19,6 +19,7 @@ export default function RootLayout({ children }) {
   const changeLocation = (newLoc) => {
     setLocation(newLoc);
     localStorage.setItem("userLocation", newLoc);
+    window.dispatchEvent(new Event("locationChanged"));
     setIsModalOpen(false);
   };
 
