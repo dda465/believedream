@@ -74,64 +74,53 @@ export default function Home() {
       <div className="px-5 pt-4 pb-2 anim-fade-in relative group">
         <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4">
           
-          {/* 배너 1 */}
+          {/* 배너 1 (버튼 제거, 넘기기 화살표 추가) */}
           <div className="min-w-full snap-center rounded-[var(--radius-xl)] overflow-hidden relative shadow-banner shrink-0">
             <div className="relative h-[190px] bg-gradient-to-br from-[var(--banner-from)] via-[var(--banner-via)] to-[var(--banner-to)]">
               <Image src="/hero-banner.png" alt="빌리드림 히어로 배너" fill className="object-cover opacity-60" priority />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white pr-12">
                 <p className="text-[11px] font-semibold text-white/70 mb-1 tracking-wider uppercase">부산 중고가전 렌탈 플랫폼</p>
-                <h2 className="text-[20px] font-black leading-[1.25] tracking-tight mb-2.5">
+                <h2 className="text-[20px] font-black leading-[1.25] tracking-tight mb-1">
                   월 <span className="text-[var(--accent)]">3,900</span>원부터<br/>가전 렌탈 시작
                 </h2>
-                <Link href="/apply" className="inline-block bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white text-[13px] font-bold px-5 py-2.5 rounded-full transition-all shadow-glow">
-                  지금 견적 받기 →
-                </Link>
+              </div>
+              {/* 스와이프 유도 화살표 */}
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white/90 animate-pulse">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
           </div>
 
-          {/* 배너 2: 오픈 이벤트 */}
-          <div className="min-w-full snap-center rounded-[var(--radius-xl)] overflow-hidden relative shadow-banner shrink-0">
-            <div className="relative h-[190px] bg-gradient-to-r from-purple-600 to-indigo-600">
+          {/* 배너 2: 오픈 이벤트 & 우리동네 최저가 진입점 */}
+          <Link href="/local-lowest" className="min-w-full snap-center rounded-[var(--radius-xl)] overflow-hidden relative shadow-banner shrink-0 block">
+            <div className="relative h-[190px] bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53]">
               {/* 장식 요소들 */}
               <div className="absolute right-0 bottom-0 w-32 h-32 bg-white/10 rounded-tl-full" />
               <div className="absolute right-10 top-5 w-16 h-16 bg-white/10 rounded-full" />
-              <div className="absolute right-5 bottom-8 text-[60px] opacity-20 transform -rotate-12">🎉</div>
+              <div className="absolute right-5 bottom-8 text-[60px] opacity-20 transform -rotate-12">💸</div>
               
               <div className="absolute inset-0 flex flex-col justify-center px-6 text-white">
-                <div className="inline-block bg-white/20 px-2 py-1 rounded text-[11px] font-bold w-max mb-3 backdrop-blur-sm border border-white/20">오픈 이벤트</div>
-                <h2 className="text-[24px] font-black leading-tight tracking-tight mb-2">
-                  빌리드림이<br/><span className="text-yellow-300">다 빌려드림!</span>
+                <div className="inline-block bg-white/20 px-2 py-1 rounded text-[11px] font-bold w-max mb-3 backdrop-blur-sm border border-white/20">
+                  🎉 오픈 이벤트! 빌리드림이 빌려드림
+                </div>
+                <h2 className="text-[22px] font-black leading-tight tracking-tight mb-2">
+                  우리동네 최저가<br/><span className="text-yellow-200">가전 렌탈 보기 →</span>
                 </h2>
                 <p className="text-[12.5px] font-medium text-white/90 mt-1">
-                  위약금 ZERO · 당일 즉시 설치
+                  내 동네에서 가장 싼 렌탈료를 확인하세요
                 </p>
               </div>
             </div>
-          </div>
+          </Link>
 
         </div>
         
-        {/* 스크롤 힌트 */}
-        <div className="absolute top-[85px] right-8 w-10 h-10 bg-black/30 backdrop-blur-md rounded-full flex items-center justify-center text-white/70 pointer-events-none animate-pulse">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        {/* 스크롤 힌트(하단 점) */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+          <div className="w-1.5 h-1.5 bg-white/80 rounded-full" />
+          <div className="w-1.5 h-1.5 bg-white/40 rounded-full" />
         </div>
-      </div>
-
-      {/* ━━━━━━━━━━ 1.5 우리동네 최저가 진입 배너 ━━━━━━━━━━ */}
-      <div className="px-5 mt-2 mb-3 anim-fade-in">
-        <Link href="/local-lowest" className="flex items-center justify-between w-full bg-gradient-to-r from-[#FFF5F0] to-[#FFE8DE] border border-[#FFD5C2] rounded-[var(--radius-lg)] p-4 shadow-sm active:scale-[0.98] transition-transform group">
-          <div className="flex flex-col">
-            <span className="text-[11px] font-bold text-[var(--accent)] mb-0.5">💸 렌탈료 부담 낮추기</span>
-            <span className="text-[15px] font-black text-gray-800 flex items-center gap-1.5">
-              우리동네 최저가 가전 보기
-            </span>
-          </div>
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-[var(--accent)] group-hover:translate-x-1 transition-transform">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </div>
-        </Link>
       </div>
 
       {/* ━━━━━━━━━━ 1.5 렌탈 방식 탭 (토글) ━━━━━━━━━━ */}
