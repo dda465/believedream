@@ -28,7 +28,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [userDistrict, setUserDistrict] = useState("");
-  const [rentalMode, setRentalMode] = useState("direct"); // "direct" | "brokerage"
+  const [rentalMode, setRentalMode] = useState("brokerage"); // "brokerage" | "direct"
 
   useEffect(() => {
     getProducts()
@@ -96,19 +96,32 @@ export default function Home() {
       <div className="px-5 mt-4 mb-2">
         <div className="flex bg-[#F1F3F5] p-1 rounded-xl shadow-inner relative">
           <button 
-            onClick={() => setRentalMode("direct")}
-            className={`flex-1 py-3 text-[14px] font-bold rounded-lg transition-all z-10 ${rentalMode === 'direct' ? 'text-[var(--primary)]' : 'text-gray-500 hover:text-gray-700'}`}
-          >
-            빌리드림 직영 렌탈
-          </button>
-          <button 
             onClick={() => setRentalMode("brokerage")}
             className={`flex-1 py-3 text-[14px] font-bold rounded-lg transition-all z-10 ${rentalMode === 'brokerage' ? 'text-[var(--primary)]' : 'text-gray-500 hover:text-gray-700'}`}
           >
             동네 매장 직접 렌탈
           </button>
+          <button 
+            onClick={() => setRentalMode("direct")}
+            className={`flex-1 py-3 text-[14px] font-bold rounded-lg transition-all z-10 ${rentalMode === 'direct' ? 'text-[var(--primary)]' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            빌리드림 직영 렌탈
+          </button>
           {/* 부드럽게 움직이는 배경 Indicator */}
-          <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-transform duration-300 ease-out ${rentalMode === 'direct' ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'}`} />
+          <div className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-white rounded-lg shadow-sm transition-transform duration-300 ease-out ${rentalMode === 'brokerage' ? 'translate-x-0' : 'translate-x-[calc(100%+8px)]'}`} />
+        </div>
+        
+        {/* 부가적인 설명 텍스트 영역 */}
+        <div className="text-center mt-3 h-[24px]">
+          {rentalMode === 'brokerage' ? (
+            <p className="text-[12.5px] font-bold text-[var(--accent)] bg-[var(--accent-soft)] inline-block px-3 py-1 rounded-full anim-slide-up">
+              🚀 가까운 동네 중고매장에서 바로!
+            </p>
+          ) : (
+            <p className="text-[12.5px] font-bold text-[var(--primary)] bg-[var(--info-soft)] inline-block px-3 py-1 rounded-full anim-slide-up">
+              ✨ 빌리드림이 품질을 보증하고 빌려드림!
+            </p>
+          )}
         </div>
       </div>
 
