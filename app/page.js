@@ -10,14 +10,14 @@ import { getProducts } from "@/app/lib/db";
    ═══════════════════════════════════════════════════════ */
 
 const categories = [
-  { icon: "💧", name: "제습기", slug: "dehumidifier" },
-  { icon: "🌿", name: "공기청정기", slug: "air-purifier" },
-  { icon: "👕", name: "건조기", slug: "dryer" },
-  { icon: "🗑️", name: "음식물처리기", slug: "food-processor" },
-  { icon: "🤖", name: "로봇청소기", slug: "robot-cleaner" },
-  { icon: "💦", name: "정수기", slug: "water-purifier" },
-  { icon: "🧺", name: "세탁기", slug: "washer" },
-  { icon: "➕", name: "전체보기", slug: "all" },
+  { img: "/icons/dehumidifier.png", name: "제습기", slug: "dehumidifier" },
+  { img: "/icons/air_purifier.png", name: "공기청정기", slug: "air-purifier" },
+  { img: "/icons/dryer.png", name: "건조기", slug: "dryer" },
+  { img: "/icons/food_processor.png", name: "음식물처리기", slug: "food-processor" },
+  { img: "/icons/robot_cleaner.png", name: "로봇청소기", slug: "robot-cleaner" },
+  { img: "/icons/water_purifier.png", name: "정수기", slug: "water-purifier" },
+  { img: "/icons/washer.png", name: "세탁기", slug: "washer" },
+  { img: "/icons/all.png", name: "전체보기", slug: "all" },
 ];
 
 const condStyle = { "S급": "bg-emerald-50 text-emerald-700", "A급": "bg-sky-50 text-sky-700", "B급": "bg-amber-50 text-amber-700" };
@@ -145,8 +145,8 @@ export default function Home() {
         <div className="grid grid-cols-4 gap-y-5 gap-x-4">
           {categories.map((cat) => (
             <Link href={`/category/${cat.slug}`} key={cat.name} className="flex flex-col items-center gap-1.5 group">
-              <div className="w-[50px] h-[50px] rounded-[var(--radius-lg)] bg-white shadow-card flex items-center justify-center text-[24px] group-hover:shadow-float group-hover:scale-105 transition-all duration-200">
-                {cat.icon}
+              <div className="w-[50px] h-[50px] rounded-[var(--radius-lg)] bg-white shadow-card flex items-center justify-center group-hover:shadow-float group-hover:scale-105 transition-all duration-200 overflow-hidden p-1.5">
+                <Image src={cat.img} alt={cat.name} width={38} height={38} className="object-contain" />
               </div>
               <span className="text-[11px] font-bold text-[var(--text)] group-hover:text-[var(--accent)] transition-colors text-center leading-tight">{cat.name}</span>
             </Link>
