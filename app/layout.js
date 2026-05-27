@@ -45,10 +45,17 @@ export default function RootLayout({ children }) {
           {/* ── 헤더 ── */}
           <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[var(--border-light)]">
             <div className="flex items-center justify-between h-[52px] px-5">
-              <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1.5 py-1 active:scale-95 transition-transform">
-                <span className="text-[18px] font-black tracking-tight text-[var(--text-dark)]">{location}</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </button>
+              <div className="flex items-center gap-3">
+                <Link href="/" className="flex items-baseline gap-0.5 py-1 active:scale-95 transition-transform">
+                  <span className="text-[20px] font-black tracking-tight text-[var(--primary)]">빌리</span>
+                  <span className="text-[20px] font-black tracking-tight text-[var(--accent)]">드림</span>
+                </Link>
+                <div className="w-[1px] h-3.5 bg-gray-300 rounded-full" />
+                <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 py-1 active:scale-95 transition-transform">
+                  <span className="text-[14px] font-bold tracking-tight text-[var(--text-dark)]">{location}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+              </div>
               <div className="flex items-center gap-2">
                 <button aria-label="검색" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] active:scale-95 transition-all">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
