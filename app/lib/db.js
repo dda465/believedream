@@ -118,3 +118,73 @@ export async function createPartnerApplication(applicationData) {
     return { success: false, id: null, error: "입점 신청서 저장에 실패했습니다. 다시 시도해 주세요." };
   }
 }
+
+// ----------------------------------------------------
+// Admin 통계 및 관리용 함수 모음
+// ----------------------------------------------------
+
+// 5. 상품 등록 (Admin)
+export async function createProduct(productData) {
+  if (isFirebaseDummy()) return { success: true, id: `mock-prod-${Date.now()}` };
+  try {
+    const colRef = collection(db, "products");
+    const docRef = await addDoc(colRef, { ...productData, createdAt: new Date().toISOString() });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error("Error creating product:", error);
+    return { success: false, error };
+  }
+}
+
+// 6. 상품 수정 (Admin)
+export async function updateProduct(id, productData) {
+  if (isFirebaseDummy()) return { success: true };
+  try {
+    const docRef = doc(db, "products", id);
+    await setDoc(docRef, productData, { merge: true });
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating product:", error);
+    return { success: false, error };
+  }
+}
+
+// 7. 상품 삭제 (Admin)
+import { deleteDoc } from "firebase/firestore";
+export async function deleteProduct(id) {
+  if (isFirebaseDummy()) return { success: true };
+  try {
+    const docRef = doc(db, "products", id);
+    await deleteDoc(docRef);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    return { success: false, error };
+  }
+}
+
+// 8. 모든 렌탈 신청서 조회 (Admin)
+export async function getAllRentalRequests() {
+  if (isFirebaseDummy()) return [];
+  try {
+    const colRef = collection(db, "rental_requests");
+    const snapshot = await getDocs(colRef);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error("Error fetching rental requests:", error);
+    return [];
+  }
+}
+
+// 9. 모든 입점 신청서 조회 (Admin)
+export async function getAllPartnerApplications() {
+  if (isFirebaseDummy()) return [];
+  try {
+    const colRef = collection(db, "partner_applications");
+    const snapshot = await getDocs(colRef);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error("Error fetching partner applications:", error);
+    return [];
+  }
+}

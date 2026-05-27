@@ -77,14 +77,16 @@ export default function ProductDetail({ params }) {
       {/* 가격 */}
       <div className="px-5 py-5 bg-white">
         <h3 className="text-[14px] font-black text-[var(--text-dark)] mb-3">💰 렌탈 가격</h3>
-        <div className="grid grid-cols-3 gap-1.5">
+        <div className="flex gap-2 overflow-x-auto pb-3 no-scrollbar snap-x">
           {[
-            { period:"6개월", price:p.price6, active:false },
-            { period:"12개월", price:p.price12, active:true },
-            { period:"24개월", price:p.price24, active:false },
+            { period:"1개월", price:p.price1 || "-", active:false },
+            { period:"3개월", price:p.price3 || p.price6, active:false },
+            { period:"6개월", price:p.price6 || p.price12, active:true },
+            { period:"12개월", price:p.price12 || p.price24, active:false },
+            { period:"24개월", price:p.price24 || "-", active:false },
           ].map(opt => (
-            <div key={opt.period} className={`relative text-center py-2.5 rounded-[var(--radius-md)] transition-all ${
-              opt.active ? 'border-2 border-[var(--accent)] bg-[var(--accent-soft)] shadow-glow' : 'shadow-sm border border-transparent bg-white'
+            <div key={opt.period} className={`relative flex-shrink-0 w-[100px] snap-center text-center py-3 rounded-[var(--radius-md)] transition-all ${
+              opt.active ? 'border-2 border-[var(--accent)] bg-[var(--accent-soft)] shadow-glow' : 'shadow-sm border border-[var(--border-light)] bg-white'
             }`}>
               {opt.active && <span className="absolute -top-2 left-1/2 -translate-x-1/2 text-[10px] font-bold bg-[var(--accent)] text-white px-2 py-0.5 rounded-full">추천</span>}
               <p className="text-[12px] text-[var(--text-light)]">{opt.period}</p>
@@ -137,7 +139,7 @@ export default function ProductDetail({ params }) {
         <div className="bg-white shadow-card rounded-[var(--radius-lg)] p-4">
           <div className="space-y-0">
             {[
-              ["렌탈 기간", "6 / 12 / 24개월"],
+              ["렌탈 기간", "1 / 3 / 6 / 12 / 24개월"],
               ["설치비", "무료"],
               ["인수", p.buyout ? "가능 (잔여가 납부)" : "불가"],
               ["중도 해지", "위약금 없음"],

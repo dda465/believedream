@@ -133,17 +133,22 @@ export default function PartnerPage() {
 
           {/* 혜택 */}
           <section className="px-5 py-6 bg-white">
-            <h3 className="text-[16px] font-black text-[var(--text-dark)] mb-4">🎁 입점 혜택</h3>
+            <h3 className="text-[16px] font-black text-[var(--text-dark)] mb-4 flex items-center gap-1.5">
+              <img src="/icons/gift.png" alt="선물" className="w-5 h-5 object-contain" /> 
+              입점 혜택
+            </h3>
             <div className="flex flex-col gap-2.5">
               {[
-                {icon:"📱",title:"온라인 노출",desc:"동네 고객이 사장님 상품을 바로 볼 수 있어요",color:"var(--info-soft)"},
-                {icon:"💰",title:"비용 0원",desc:"입점·등록 무료. 거래 될 때만 소정의 수수료",color:"var(--warn-soft)"},
-                {icon:"🙌",title:"등록 대행",desc:"저희가 직접 방문해서 사진·가격·설명 다 올려드려요",color:"var(--success-soft)"},
-                {icon:"📦",title:"재고 매입",desc:"안 팔리는 재고 → 저희가 매입 후 렌탈로 돌려드려요",color:"var(--purple-soft)"},
+                {img:"/icons/phone.png",title:"온라인 노출",desc:"동네 고객이 사장님 상품을 바로 볼 수 있어요",color:"var(--info-soft)"},
+                {img:"/icons/money.png",title:"비용 0원",desc:"입점·등록 무료. 거래 될 때만 소정의 수수료",color:"var(--warn-soft)"},
+                {img:"/icons/hands.png",title:"등록 대행",desc:"저희가 직접 방문해서 사진·가격·설명 다 올려드려요",color:"var(--success-soft)"},
+                {img:"/icons/box.png",title:"재고 매입",desc:"안 팔리는 재고 → 저희가 매입 후 렌탈로 돌려드려요",color:"var(--purple-soft)"},
               ].map(item=>(
-                <div key={item.title} className="flex items-start gap-3.5 rounded-[var(--radius-md)] p-4" style={{backgroundColor:item.color}}>
-                  <div className="text-[22px] flex-shrink-0">{item.icon}</div>
-                  <div>
+                <div key={item.title} className="flex items-start gap-3.5 rounded-[var(--radius-md)] p-4 bg-white border border-[var(--border-light)] shadow-sm">
+                  <div className="w-[44px] h-[44px] flex-shrink-0 flex items-center justify-center rounded-full" style={{backgroundColor:item.color}}>
+                    <img src={item.img} alt={item.title} className="w-6 h-6 object-contain" />
+                  </div>
+                  <div className="flex-1 pt-0.5">
                     <p className="text-[13px] font-bold text-[var(--text-dark)]">{item.title}</p>
                     <p className="text-[12px] text-[var(--text-light)] mt-0.5">{item.desc}</p>
                   </div>
