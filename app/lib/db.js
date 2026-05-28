@@ -174,14 +174,45 @@ export async function deleteProduct(id) {
 
 // 8. 모든 렌탈 신청서 조회 (Admin)
 export async function getAllRentalRequests() {
-  if (isFirebaseDummy()) return [];
+  if (isFirebaseDummy()) return fallbackOrders;
   try {
-    const colRef = collection(db, "rental_requests");
+    const colRef = collection(db, "orders");
     const snapshot = await getDocs(colRef);
     return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
   } catch (error) {
     console.error("Error fetching rental requests:", error);
-    return [];
+    return fallbackOrders;
+  }
+}
+
+// 8-1. 특정 파트너의 렌탈 신청서 조회
+import { query, where } from "firebase/firestore";
+export async function getPartnerOrders(partnerId) {
+  if (isFirebaseDummy()) {
+    return fallbackOrders.filter(o => o.partnerId === partnerId);
+  }
+  try {
+    const q = query(collection(db, "orders"), where("partnerId", "==", partnerId));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error("Error fetching partner orders:", error);
+    return fallbackOrders.filter(o => o.partnerId === partnerId);
+  }
+}
+
+// 8-2. 특정 파트너의 상품 조회
+export async function getPartnerProducts(partnerId) {
+  if (isFirebaseDummy()) {
+    return fallbackProducts.filter(p => p.partnerId === partnerId);
+  }
+  try {
+    const q = query(collection(db, "products"), where("partnerId", "==", partnerId));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (error) {
+    console.error("Error fetching partner products:", error);
+    return fallbackProducts.filter(p => p.partnerId === partnerId);
   }
 }
 
