@@ -28,6 +28,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [userDistrict, setUserDistrict] = useState("");
+  const [userAddress, setUserAddress] = useState("위치 인증이 필요합니다");
+  const [isLocating, setIsLocating] = useState(false);
   const [rentalMode, setRentalMode] = useState("brokerage"); // "brokerage" | "direct"
 
   useEffect(() => {
@@ -39,6 +41,7 @@ export default function Home() {
       const saved = localStorage.getItem("userLocation");
       if (saved) {
         setUserDistrict(saved.split(" ")[0]);
+        setUserAddress(saved);
       }
     };
     updateDistrict(); // 초기 로드 시
@@ -67,8 +70,53 @@ export default function Home() {
     if (e.key === "Enter") handleSearch();
   };
 
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      alert("이 브라우저에서는 위치 기반 서비스를 지원하지 않습니다.");
+      return;
+    }
+    
+    setIsLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        // const lat = position.coords.latitude;
+        // const lng = position.coords.longitude;
+        // TODO: 향후 카카오 로컬 API 통신
+        // fetch(`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`, { headers: { Authorization: `KakaoAK API_KEY` }})
+        
+        // 현재는 임시 더미 위치로 강제 매핑 (부산진구 부전동)
+        setTimeout(() => {
+          const mockDistrict = "부산진구 부전동";
+          localStorage.setItem("userLocation", mockDistrict);
+          setUserDistrict("부산진구");
+          setUserAddress(mockDistrict);
+          setIsLocating(false);
+          alert("📍 내 동네 인증 완료!\n현재 위치: " + mockDistrict);
+        }, 800);
+      },
+      (error) => {
+        setIsLocating(false);
+        console.error(error);
+        alert("위치 접근 권한이 거부되었습니다. 권한을 허용하거나 수동으로 주소를 검색해주세요.");
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
+  };
+
   return (
     <div className="w-full overflow-x-hidden pb-[80px]">
+
+      {/* ━━━━━━━━━━ 0. 동네 위치 인증 바 ━━━━━━━━━━ */}
+      <div className="sticky top-[52px] z-30 bg-white border-b border-gray-100 px-5 py-2.5 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-1.5 cursor-pointer" onClick={requestLocation}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span className="text-[15px] font-black text-[var(--text-dark)]">{userAddress}</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <button onClick={requestLocation} className="bg-gray-100 text-gray-600 text-[11px] font-bold px-2.5 py-1.5 rounded-md hover:bg-gray-200 transition-colors">
+          {isLocating ? "위치 찾는 중..." : "동네 인증하기"}
+        </button>
+      </div>
 
       {/* ━━━━━━━━━━ 1. 히어로 배너 (멀티 슬라이더) ━━━━━━━━━━ */}
       <div className="px-5 pt-4 pb-2 anim-fade-in relative group">
