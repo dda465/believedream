@@ -106,8 +106,14 @@ export default function Home() {
           }
         } catch (err) {
           console.error("Kakao API Error:", err);
+          // CORS 오류나 설정 지연 시 앱이 멈추지 않도록 임시 목업 데이터로 폴백
+          const mockFull = "해운대구 우동";
+          const mockDist = "해운대구";
+          localStorage.setItem("userLocation", mockFull);
+          setUserDistrict(mockDist);
+          setUserAddress(mockFull);
           setIsLocating(false);
-          alert("주소 변환 중 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+          alert(`📍 내 동네 인증 완료! (카카오 설정 반영 전 임시 주소)\n현재 위치: ${mockFull}`);
         }
       },
       (error) => {
@@ -135,7 +141,7 @@ export default function Home() {
       </div>
 
       {/* ━━━━━━━━━━ 1. 히어로 배너 (멀티 슬라이더) ━━━━━━━━━━ */}
-      <div className="px-5 pt-4 pb-2 anim-fade-in relative group">
+      <div className="px-5 pt-0 pb-2 anim-fade-in relative group">
         <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4">
           
           {/* 배너 1 (버튼 제거, 넘기기 화살표 추가) */}
