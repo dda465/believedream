@@ -83,11 +83,8 @@ export default function Home() {
         const lng = position.coords.longitude;
         
         try {
-          const response = await fetch(`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`, {
-            headers: {
-              Authorization: `KakaoAK 05bbc382e05f3e1b7736121d17ebb4d1`
-            }
-          });
+          // 보안 및 CORS 오류 방지를 위해 자체 서버(Next.js) API 라우트를 경유합니다.
+          const response = await fetch(`/api/location?x=${lng}&y=${lat}`);
           const data = await response.json();
           
           if (data.documents && data.documents.length > 0) {
