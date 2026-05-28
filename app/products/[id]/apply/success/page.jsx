@@ -39,7 +39,7 @@ function SuccessContent() {
         </div>
 
         <div className="w-full space-y-3">
-          <Link href="/mypage/rentals" className="w-full bg-[var(--primary)] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+          <Link href="/rentals" className="w-full bg-[var(--primary)] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
             <Package size={20} />
             내 렌탈 현황 보기
           </Link>

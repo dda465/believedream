@@ -58,7 +58,7 @@ export default function MyPageHome() {
         <div className="bg-white rounded-2xl shadow-card p-5">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-[15px] font-black text-[var(--text-dark)]">나의 렌탈 현황</h2>
-            <Link href="/mypage/rentals" className="text-[12px] text-[var(--text-light)] flex items-center">전체보기 <ChevronRight size={14}/></Link>
+            <Link href="/rentals" className="text-[12px] text-[var(--text-light)] flex items-center">전체보기 <ChevronRight size={14}/></Link>
           </div>
           
           <div className="flex justify-between items-center px-2">
@@ -143,21 +143,28 @@ export default function MyPageHome() {
       {/* ── 바로가기 메뉴 ── */}
       <section className="px-5 mt-4 mb-8">
         <div className="bg-white rounded-2xl shadow-sm border border-[var(--border-light)] overflow-hidden">
-          <button className="w-full flex items-center justify-between p-4 border-b border-[var(--border-light)] hover:bg-gray-50">
+          <Link href="/rentals" className="w-full flex items-center justify-between p-4 border-b border-[var(--border-light)] hover:bg-gray-50 flex">
+            <div className="flex items-center gap-3">
+              <Package size={18} className="text-[var(--text-light)]" />
+              <span className="text-[14px] font-medium text-[var(--text-dark)]">나의 렌탈/계약 내역 관리</span>
+            </div>
+            <ChevronRight size={18} className="text-[var(--text-light)]" />
+          </Link>
+          <Link href="/partner" className="w-full flex items-center justify-between p-4 border-b border-[var(--border-light)] hover:bg-gray-50 flex">
+            <div className="flex items-center gap-3">
+              <Settings size={18} className="text-[var(--text-light)]" />
+              <span className="text-[14px] font-medium text-[var(--text-dark)]">파트너 매장 입점 신청 (사장님용)</span>
+            </div>
+            <ChevronRight size={18} className="text-[var(--text-light)]" />
+          </Link>
+          <button onClick={() => alert("준비 중인 기능입니다.")} className="w-full flex items-center justify-between p-4 border-b border-[var(--border-light)] hover:bg-gray-50">
             <div className="flex items-center gap-3">
               <CreditCard size={18} className="text-[var(--text-light)]" />
               <span className="text-[14px] font-medium text-[var(--text-dark)]">결제 수단 및 자동이체 관리</span>
             </div>
             <ChevronRight size={18} className="text-[var(--text-light)]" />
           </button>
-          <button className="w-full flex items-center justify-between p-4 border-b border-[var(--border-light)] hover:bg-gray-50">
-            <div className="flex items-center gap-3">
-              <Package size={18} className="text-[var(--text-light)]" />
-              <span className="text-[14px] font-medium text-[var(--text-dark)]">이전 렌탈 내역 (해지/완료)</span>
-            </div>
-            <ChevronRight size={18} className="text-[var(--text-light)]" />
-          </button>
-          <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50">
+          <button onClick={() => alert("카카오톡 @빌리드림 채널로 문의 바랍니다.")} className="w-full flex items-center justify-between p-4 hover:bg-gray-50">
             <div className="flex items-center gap-3">
               <HeadphonesIcon size={18} className="text-[var(--text-light)]" />
               <span className="text-[14px] font-medium text-[var(--text-dark)]">고객센터 문의하기</span>
