@@ -162,7 +162,7 @@ export default function ProductDetail({ params }) {
             aria-label="카카오톡 상담"
             className="w-[48px] h-[48px] min-w-[44px] min-h-[44px] border border-[var(--border)] rounded-[var(--radius-md)] flex items-center justify-center hover:bg-[var(--bg-sub)] transition-colors text-[18px] flex-shrink-0"
           >💬</button>
-          <Link href={`/apply?product=${p.id}`}
+          <Link href={`/products/${p.id}/apply`}
             className="flex-1 h-[48px] min-h-[44px] bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-bold rounded-[var(--radius-md)] text-[14px] flex items-center justify-center transition-all active:scale-[0.98] shadow-glow">
             렌탈 신청하기
           </Link>

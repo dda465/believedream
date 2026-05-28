@@ -82,7 +82,7 @@ export default function RootLayout({ children }) {
               <NavItem href="/category/all" icon={<IconGrid />} label="카테고리" active={pathname.startsWith("/category")} />
               <NavItem href="/apply" icon={<IconDoc />} label="렌탈신청" active={pathname.startsWith("/apply")} />
               <NavItem href="/partner" icon={<IconStore />} label="입점신청" active={pathname.startsWith("/partner")} />
-              <NavItem href="#" icon={<IconUser />} label="마이" active={false} />
+              <NavItem href="/mypage" icon={<IconUser />} label="마이" active={pathname.startsWith("/mypage")} />
             </div>
           </nav>
 

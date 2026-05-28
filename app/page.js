@@ -346,7 +346,7 @@ export default function Home() {
             <p className="text-[12px] text-[var(--text-light)] mb-4 leading-relaxed">
               입점 무료 · 상품 등록 대행 · 부산 전역 방문 매입
             </p>
-            <Link href="/partner" className="inline-flex items-center text-[12px] font-bold bg-white text-[var(--primary)] px-4 py-2.5 rounded-full shadow-card hover:shadow-float transition-all active:scale-95">
+            <Link href="/partner/apply" className="inline-flex items-center text-[12px] font-bold bg-white text-[var(--primary)] px-4 py-2.5 rounded-full shadow-card hover:shadow-float transition-all active:scale-95">
               무료 입점 신청 →
             </Link>
           </div>
@@ -363,6 +363,7 @@ export default function Home() {
           <span>이용약관</span>
           <span>개인정보처리방침</span>
           <span>사업자정보</span>
+          <Link href="/partner/dashboard" className="text-[var(--accent)] font-bold ml-auto">파트너 대시보드</Link>
         </div>
         <p className="mt-3 text-[var(--text-lighter)]">© 2026 빌리드림. All rights reserved.</p>
       </footer>
