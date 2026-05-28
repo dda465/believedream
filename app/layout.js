@@ -47,9 +47,12 @@ export default function RootLayout({ children }) {
           <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[var(--border-light)]">
             <div className="flex items-center justify-between h-[52px] px-5">
               <div className="flex items-center gap-3">
-                <Link href="/" className="flex items-baseline gap-0.5 py-1 active:scale-95 transition-transform">
-                  <span className="text-[20px] font-black tracking-tight text-[var(--primary)]">빌리</span>
-                  <span className="text-[20px] font-black tracking-tight text-[var(--accent)]">드림</span>
+                <Link href="/" className="flex items-center gap-1.5 py-1 active:scale-95 transition-transform">
+                  <img src="/logo.png" alt="빌리드림 로고" className="w-8 h-8 object-contain" />
+                  <div className="flex items-baseline gap-0.5 mt-0.5">
+                    <span className="text-[20px] font-black tracking-tight text-[var(--primary)]">빌리</span>
+                    <span className="text-[20px] font-black tracking-tight text-[var(--accent)]">드림</span>
+                  </div>
                 </Link>
                 <div className="w-[1px] h-3.5 bg-gray-300 rounded-full" />
                 <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-1 py-1 active:scale-95 transition-transform">
