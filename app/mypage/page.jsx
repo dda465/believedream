@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { User, Package, ChevronRight, CreditCard, HeadphonesIcon, Settings, MessageCircle, Gift, ArrowRight, Truck, CheckCircle2, ClipboardList, ShieldCheck } from "lucide-react";
+import { User, Package, ChevronRight, CreditCard, HeadphonesIcon, Settings, MessageCircle, Gift, ArrowRight, Truck, CheckCircle2, ClipboardList, ShieldCheck, Tag } from "lucide-react";
 
 export default function MyPageHome() {
   // 가상의 로그인 고객 데이터
@@ -147,6 +147,13 @@ export default function MyPageHome() {
             <div className="flex items-center gap-3">
               <Package size={18} className="text-[var(--text-light)]" />
               <span className="text-[14px] font-medium text-[var(--text-dark)]">나의 렌탈/계약 내역 관리</span>
+            </div>
+            <ChevronRight size={18} className="text-[var(--text-light)]" />
+          </Link>
+          <Link href="/sell" className="w-full flex items-center justify-between p-4 border-b border-[var(--border-light)] hover:bg-gray-50 flex">
+            <div className="flex items-center gap-3">
+              <Tag size={18} className="text-[var(--text-light)]" />
+              <span className="text-[14px] font-medium text-[var(--text-dark)]">나의 중고 판매/견적 내역</span>
             </div>
             <ChevronRight size={18} className="text-[var(--text-light)]" />
           </Link>
