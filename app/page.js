@@ -129,7 +129,7 @@ export default function Home() {
     <div className="w-full overflow-x-hidden pb-[80px]">
 
       {/* ━━━━━━━━━━ 0. 동네 위치 인증 바 ━━━━━━━━━━ */}
-      <div className="sticky top-[52px] z-30 bg-white border-b border-gray-100 px-5 py-2.5 flex items-center justify-between shadow-sm">
+      <div className="bg-white border-b border-gray-100 px-5 py-3 flex items-center justify-between">
         <div className="flex items-center gap-1.5 cursor-pointer" onClick={requestLocation}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-dark)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           <span className="text-[15px] font-black text-[var(--text-dark)]">{userAddress}</span>
@@ -141,7 +141,7 @@ export default function Home() {
       </div>
 
       {/* ━━━━━━━━━━ 1. 히어로 배너 (멀티 슬라이더) ━━━━━━━━━━ */}
-      <div className="px-5 pt-0 pb-2 anim-fade-in relative group">
+      <div className="px-5 pt-4 pb-2 anim-fade-in relative group">
         <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4">
           
           {/* 배너 1 (버튼 제거, 넘기기 화살표 추가) */}
