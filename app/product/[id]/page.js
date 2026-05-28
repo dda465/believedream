@@ -39,7 +39,7 @@ export default function ProductDetail({ params }) {
   );
 
   return (
-    <div className="w-full bg-[var(--bg-main)] pb-[90px]">
+    <div className="w-full bg-[var(--bg-main)] pb-[120px]">
       {/* ── 서브 헤더 ── */}
       <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[var(--border-light)]">
         <div className="flex items-center gap-3 px-5 h-[48px]">
@@ -77,7 +77,7 @@ export default function ProductDetail({ params }) {
       {/* 가격 */}
       <div className="px-5 py-5 bg-white">
         <h3 className="text-[14px] font-black text-[var(--text-dark)] mb-3">💰 렌탈 가격</h3>
-        <div className="flex gap-2 overflow-x-auto pb-3 no-scrollbar snap-x">
+        <div className="flex gap-2 overflow-x-auto pt-3 pb-3 px-1 hide-scrollbar snap-x">
           {[
             { period:"1개월", price:p.price1 || "-", active:false },
             { period:"3개월", price:p.price3 || p.price6, active:false },
