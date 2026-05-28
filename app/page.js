@@ -31,6 +31,45 @@ export default function Home() {
   const [userAddress, setUserAddress] = useState("위치 인증이 필요합니다");
   const [isLocating, setIsLocating] = useState(false);
   const [rentalMode, setRentalMode] = useState("brokerage"); // "brokerage" | "direct"
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+  const totalSlides = 2;
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % totalSlides);
+  };
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const diff = touchStart - touchEnd;
+    if (diff > 50) {
+      nextSlide();
+    }
+    if (diff < -50) {
+      prevSlide();
+    }
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
 
   useEffect(() => {
     getProducts()
@@ -137,13 +176,22 @@ export default function Home() {
         </button>
       </div>
 
-      {/* ━━━━━━━━━━ 1. 히어로 배너 (멀티 슬라이더) ━━━━━━━━━━ */}
-      <div className="px-5 pt-4 pb-2 anim-fade-in relative group">
-        <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4">
-          
-          {/* 배너 1 (버튼 제거, 넘기기 화살표 추가) */}
-          <div className="min-w-full snap-center rounded-[var(--radius-xl)] overflow-hidden relative shadow-banner shrink-0">
-            <div className="relative h-[190px] bg-gradient-to-br from-[var(--banner-from)] via-[var(--banner-via)] to-[var(--banner-to)]">
+      {/* ━━━━━━━━━━ 1. 히어로 배너 (자동 슬라이더 & 터치 스와이프 지원) ━━━━━━━━━━ */}
+      <div 
+        className="px-5 pt-4 pb-2 anim-fade-in relative group overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className="relative rounded-[var(--radius-xl)] overflow-hidden shadow-banner">
+          {/* 슬라이드 트랙 */}
+          <div 
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            
+            {/* 배너 1 (버튼 제거, 넘기기 화살표 추가) */}
+            <div className="min-w-full relative h-[190px] bg-gradient-to-br from-[var(--banner-from)] via-[var(--banner-via)] to-[var(--banner-to)] shrink-0">
               <Image src="/hero-banner.png" alt="빌리드림 히어로 배너" fill className="object-cover opacity-60" priority />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-5 text-white pr-12">
@@ -152,16 +200,10 @@ export default function Home() {
                   월 <span className="text-[var(--accent)]">3,900</span>원부터<br/>가전 렌탈 시작
                 </h2>
               </div>
-              {/* 스와이프 유도 화살표 */}
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white/90 animate-pulse">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </div>
             </div>
-          </div>
 
-          {/* 배너 2: 오픈 이벤트 & 우리동네 최저가 진입점 */}
-          <Link href="/local-lowest" className="min-w-full snap-center rounded-[var(--radius-xl)] overflow-hidden relative shadow-banner shrink-0 block">
-            <div className="relative h-[190px] bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53]">
+            {/* 배너 2: 오픈 이벤트 & 우리동네 최저가 진입점 */}
+            <Link href="/local-lowest" className="min-w-full relative h-[190px] bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] shrink-0 block">
               {/* 장식 요소들 */}
               <div className="absolute right-0 bottom-0 w-32 h-32 bg-white/10 rounded-tl-full" />
               <div className="absolute right-10 top-5 w-16 h-16 bg-white/10 rounded-full" />
@@ -178,15 +220,39 @@ export default function Home() {
                   내 동네에서 가장 싼 렌탈료를 확인하세요
                 </p>
               </div>
-            </div>
-          </Link>
+            </Link>
 
-        </div>
-        
-        {/* 스크롤 힌트(하단 점) */}
-        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-          <div className="w-1.5 h-1.5 bg-white/80 rounded-full" />
-          <div className="w-1.5 h-1.5 bg-white/40 rounded-full" />
+          </div>
+
+          {/* 왼쪽 화살표 */}
+          <button 
+            onClick={prevSlide}
+            aria-label="이전 배너"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/35 backdrop-blur-sm rounded-full flex items-center justify-center text-white/95 opacity-0 group-hover:opacity-100 transition-all active:scale-90 z-20 cursor-pointer"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+
+          {/* 오른쪽 화살표 */}
+          <button 
+            onClick={nextSlide}
+            aria-label="다음 배너"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/35 backdrop-blur-sm rounded-full flex items-center justify-center text-white/95 opacity-0 group-hover:opacity-100 transition-all active:scale-90 z-20 cursor-pointer"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+          
+          {/* 스크롤 힌트(하단 점) */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+            {Array.from({ length: totalSlides }).map((_, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={`${idx + 1}번 배너로 이동`}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${currentSlide === idx ? 'bg-white w-3.5' : 'bg-white/40'}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
