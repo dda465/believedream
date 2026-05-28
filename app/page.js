@@ -78,21 +78,37 @@ export default function Home() {
     
     setIsLocating(true);
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        // const lat = position.coords.latitude;
-        // const lng = position.coords.longitude;
-        // TODO: 향후 카카오 로컬 API 통신
-        // fetch(`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`, { headers: { Authorization: `KakaoAK API_KEY` }})
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
         
-        // 현재는 임시 더미 위치로 강제 매핑 (부산진구 부전동)
-        setTimeout(() => {
-          const mockDistrict = "부산진구 부전동";
-          localStorage.setItem("userLocation", mockDistrict);
-          setUserDistrict("부산진구");
-          setUserAddress(mockDistrict);
+        try {
+          const response = await fetch(`https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=${lng}&y=${lat}`, {
+            headers: {
+              Authorization: `KakaoAK 05bbc382e05f3e1b7736121d17ebb4d1`
+            }
+          });
+          const data = await response.json();
+          
+          if (data.documents && data.documents.length > 0) {
+            // 법정동 또는 행정동 정보 가져오기
+            const region = data.documents[0];
+            const fullAddress = `${region.region_2depth_name} ${region.region_3depth_name}`; // 예: 부산진구 부전동
+            const district = region.region_2depth_name; // 예: 부산진구
+            
+            localStorage.setItem("userLocation", fullAddress);
+            setUserDistrict(district);
+            setUserAddress(fullAddress);
+            setIsLocating(false);
+            alert(`📍 내 동네 인증 완료!\n현재 위치: ${fullAddress}`);
+          } else {
+            throw new Error("위치 정보를 찾을 수 없습니다.");
+          }
+        } catch (err) {
+          console.error("Kakao API Error:", err);
           setIsLocating(false);
-          alert("📍 내 동네 인증 완료!\n현재 위치: " + mockDistrict);
-        }, 800);
+          alert("주소 변환 중 오류가 발생했습니다. 나중에 다시 시도해주세요.");
+        }
       },
       (error) => {
         setIsLocating(false);
