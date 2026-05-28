@@ -47,7 +47,7 @@ export default function CategoryPage({ params }) {
   return (
     <div className="w-full bg-[var(--bg-main)] pb-[80px]">
       {/* 서브 헤더 */}
-      <div className="sticky top-[52px] z-40 bg-white/95 backdrop-blur-md border-b border-[var(--border-light)] shadow-sm">
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[var(--border-light)] shadow-sm">
         <div className="flex items-center gap-2 px-4 h-[48px]">
           <Link href="/" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] transition-colors active:bg-[var(--border-light)]">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text)" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>

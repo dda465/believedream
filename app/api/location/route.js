@@ -17,13 +17,15 @@ export async function GET(request) {
     });
     
     if (!response.ok) {
-      throw new Error(`Kakao API responded with status: ${response.status}`);
+      const errorText = await response.text();
+      console.error(`Kakao API Error Response Body: ${errorText}`);
+      throw new Error(`Kakao API responded with status: ${response.status}. Body: ${errorText}`);
     }
     
     const data = await response.json();
     return NextResponse.json(data);
   } catch (error) {
     console.error("Server-side Kakao API Error:", error);
-    return NextResponse.json({ error: 'Failed to fetch location from Kakao' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch location from Kakao', details: error.message }, { status: 500 });
   }
 }

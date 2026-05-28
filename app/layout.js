@@ -31,6 +31,12 @@ export default function RootLayout({ children }) {
     }, 1500);
   };
 
+  const showBottomNav = pathname === "/" || 
+                        pathname.startsWith("/category") || 
+                        pathname === "/apply" || 
+                        pathname === "/partner" || 
+                        pathname === "/mypage";
+
   return (
     <html lang="ko">
       <head>
@@ -44,29 +50,31 @@ export default function RootLayout({ children }) {
         <div className="w-full max-w-[480px] bg-[var(--bg-main)] min-h-screen relative flex flex-col shadow-2xl overflow-x-hidden">
           
           {/* ── 헤더 ── */}
-          <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[var(--border-light)]">
-            <div className="flex items-center justify-between h-[52px] px-5">
-              <div className="flex items-center gap-3">
-                <Link href="/" className="flex items-center gap-1.5 py-1 active:scale-95 transition-transform">
-                  <img src="/logo.png" alt="빌리드림 로고" className="w-8 h-8 object-contain" />
-                  <div className="flex items-baseline gap-0.5 mt-0.5">
-                    <span className="text-[20px] font-black tracking-tight text-[var(--primary)]">빌리</span>
-                    <span className="text-[20px] font-black tracking-tight text-[var(--accent)]">드림</span>
-                  </div>
-                </Link>
+          {pathname === "/" && (
+            <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[var(--border-light)]">
+              <div className="flex items-center justify-between h-[52px] px-5">
+                <div className="flex items-center gap-3">
+                  <Link href="/" className="flex items-center gap-1.5 py-1 active:scale-95 transition-transform">
+                    <img src="/logo.png" alt="빌리드림 로고" className="w-8 h-8 object-contain" />
+                    <div className="flex items-baseline gap-0.5 mt-0.5">
+                      <span className="text-[20px] font-black tracking-tight text-[var(--primary)]">빌리</span>
+                      <span className="text-[20px] font-black tracking-tight text-[var(--accent)]">드림</span>
+                    </div>
+                  </Link>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button aria-label="검색" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] active:scale-95 transition-all">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </button>
+                  <button onClick={() => alert("알림 기능이 준비 중입니다.")} aria-label="알림" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] active:scale-95 transition-all relative">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    {/* 알림 배지 (카카오톡 느낌의 오렌지 닷) */}
+                    <span className="absolute top-[10px] right-[10px] w-2 h-2 bg-[var(--accent)] rounded-full border border-white"></span>
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button aria-label="검색" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] active:scale-95 transition-all">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </button>
-                <button onClick={() => alert("알림 기능이 준비 중입니다.")} aria-label="알림" className="w-[44px] h-[44px] flex items-center justify-center rounded-full hover:bg-[var(--bg-sub)] active:scale-95 transition-all relative">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                  {/* 알림 배지 (카카오톡 느낌의 오렌지 닷) */}
-                  <span className="absolute top-[10px] right-[10px] w-2 h-2 bg-[var(--accent)] rounded-full border border-white"></span>
-                </button>
-              </div>
-            </div>
-          </header>
+            </header>
+          )}
 
           {/* ── 메인 ── */}
           <main className="flex-1 pb-[80px] w-full overflow-x-hidden">
@@ -74,15 +82,17 @@ export default function RootLayout({ children }) {
           </main>
 
           {/* ── 하단 네비게이션 ── */}
-          <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[480px] w-full bg-white/95 backdrop-blur-md rounded-t-2xl shadow-nav z-50 safe-bottom">
-            <div className="flex items-center justify-between h-[64px] px-4">
-              <NavItem href="/" icon={<IconHome />} label="홈" active={pathname === "/"} />
-              <NavItem href="/category/all" icon={<IconGrid />} label="카테고리" active={pathname.startsWith("/category")} />
-              <NavItem href="/apply" icon={<IconDoc />} label="렌탈신청" active={pathname.startsWith("/apply")} />
-              <NavItem href="/partner" icon={<IconStore />} label="입점신청" active={pathname.startsWith("/partner")} />
-              <NavItem href="/mypage" icon={<IconUser />} label="마이" active={pathname.startsWith("/mypage")} />
-            </div>
-          </nav>
+          {showBottomNav && (
+            <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[480px] w-full bg-white/95 backdrop-blur-md rounded-t-2xl shadow-nav z-50 safe-bottom">
+              <div className="flex items-center justify-between h-[64px] px-4">
+                <NavItem href="/" icon={<IconHome />} label="홈" active={pathname === "/"} />
+                <NavItem href="/category/all" icon={<IconGrid />} label="카테고리" active={pathname.startsWith("/category")} />
+                <NavItem href="/apply" icon={<IconDoc />} label="렌탈신청" active={pathname.startsWith("/apply")} />
+                <NavItem href="/partner" icon={<IconStore />} label="입점신청" active={pathname.startsWith("/partner")} />
+                <NavItem href="/mypage" icon={<IconUser />} label="마이" active={pathname.startsWith("/mypage")} />
+              </div>
+            </nav>
+          )}
 
           {/* ── 동네 설정 바텀 시트 (모달) ── */}
           {isModalOpen && (

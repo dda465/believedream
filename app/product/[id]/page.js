@@ -41,7 +41,7 @@ export default function ProductDetail({ params }) {
   return (
     <div className="w-full bg-[var(--bg-main)] pb-[90px]">
       {/* ── 서브 헤더 ── */}
-      <div className="sticky top-[52px] z-40 bg-white/95 backdrop-blur-md border-b border-[var(--border-light)]">
+      <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[var(--border-light)]">
         <div className="flex items-center gap-3 px-5 h-[48px]">
           <button
             onClick={() => router.back()}
