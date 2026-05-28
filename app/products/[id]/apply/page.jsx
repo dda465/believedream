@@ -1,33 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import DaumPostcode from "react-daum-postcode";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ChevronLeft, CheckCircle, Truck, CreditCard } from "lucide-react";
+import { getProductById } from "@/app/lib/db";
 
 export default function RentalApplyPage({ params }) {
   const router = useRouter();
-  const productId = params.id; // in Next.js 14/15, params might be a Promise, but for simplicity here we assume it's synchronous if not using generateStaticParams with dynamicParams=false, wait, in 15 it's a promise, but let's use React.use(params). Let's just assume we can get it from path or wait for it.
+  const unwrappedParams = use(params);
+  const productId = unwrappedParams.id;
   
-  // mock product data
-  const product = {
-    id: productId,
-    title: "LG 듀얼인버터 제습기 20L",
-    brand: "LG",
-    modelName: "DQ200PGAA",
-    condition: "A급",
-    rentalPrices: {
-      "1": 35000,
-      "3": 25000,
-      "6": 20000,
-      "12": 15000,
-      "24": 12000,
-    },
-    images: ["/placeholder.jpg"] // Just a placeholder
-  };
-
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("12");
   const [shippingInfo, setShippingInfo] = useState({
     name: "",
@@ -42,7 +29,40 @@ export default function RentalApplyPage({ params }) {
   const [showPostcode, setShowPostcode] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const monthlyPrice = product.rentalPrices[period];
+  useEffect(() => {
+    if (productId) {
+      getProductById(productId).then(res => {
+        if (res) {
+          // Map database prices to rentalPrices
+          const rentalPrices = {
+            "1": res.price1 || res.prices?.price1 || "35,000",
+            "3": res.price3 || res.prices?.price3 || "25,000",
+            "6": res.price6 || res.prices?.price6 || "20,000",
+            "12": res.price12 || res.prices?.price12 || "15,000",
+            "24": res.price24 || res.prices?.price24 || "12,000",
+          };
+          // Ensure prices are numbers for display/calculation (removing commas)
+          const parsedPrices = {};
+          Object.keys(rentalPrices).forEach(k => {
+            parsedPrices[k] = parseInt(String(rentalPrices[k]).replace(/,/g, ''), 10) || 0;
+          });
+
+          setProduct({
+            id: res.id,
+            title: res.name,
+            brand: res.brand,
+            modelName: res.model,
+            condition: res.condition,
+            rentalPrices: parsedPrices,
+            emoji: res.emoji,
+          });
+        }
+        setLoading(false);
+      });
+    }
+  }, [productId]);
+
+  const monthlyPrice = product ? product.rentalPrices[period] : 0;
 
   const handlePostcodeComplete = (data) => {
     let fullAddress = data.address;
@@ -102,6 +122,25 @@ export default function RentalApplyPage({ params }) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-main)] flex flex-col items-center justify-center p-5 text-center">
+        <div className="w-8 h-8 border-4 border-[var(--primary-soft)] border-t-[var(--primary)] rounded-full animate-spin"></div>
+        <p className="mt-4 text-[13px] text-[var(--text-light)] animate-pulse">상품 정보를 불러오고 있습니다...</p>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-main)] flex flex-col items-center justify-center p-5 text-center">
+        <span className="text-5xl mb-4">😢</span>
+        <p className="text-[15px] font-bold text-[var(--text-dark)]">상품 정보를 찾을 수 없습니다.</p>
+        <button onClick={() => router.back()} className="text-[13px] text-white bg-[var(--accent)] font-bold mt-4 px-5 py-2.5 rounded-[var(--radius-md)]">뒤로 가기</button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--bg-main)] pb-24">
       {/* Header */}
@@ -117,7 +156,9 @@ export default function RentalApplyPage({ params }) {
         <section className="bg-[var(--bg-card)] p-4 rounded-[var(--radius-md)] shadow-card">
           <h2 className="text-sm font-bold text-[var(--primary)] mb-2">선택한 상품</h2>
           <div className="flex gap-4">
-            <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0" />
+            <div className="w-20 h-20 bg-[var(--bg-sub)] rounded-lg flex-shrink-0 flex items-center justify-center text-[36px]">
+              {product.emoji}
+            </div>
             <div>
               <p className="text-xs text-[var(--text-light)] mb-1">{product.brand}</p>
               <h3 className="font-bold text-[var(--text-dark)] text-sm mb-1 line-clamp-2">{product.title}</h3>
